@@ -12,16 +12,17 @@ multi-stage web authentication challenge
 
 ## description
 
-nexus simulates a system with 3 authentication layers. the goal is to traverse
-each layer in order to retrieve a hidden flag.
+nexus is a flash ctf challenge: 3 authentication layers to traverse in order.
+the goal is to retrieve a hidden flag. designed for V-SANDBOX events.
 
 attribute       | value
 ----------------|-------
-difficulty      | medium
+difficulty      | flash easy
 category        | web -- multi-stage auth bypass
 flag format     | CTF{...}
 port            | 9090
 stack           | python + flask + podman/docker
+event           | V-SANDBOX by VULTAETHEL
 
 ## flow
 

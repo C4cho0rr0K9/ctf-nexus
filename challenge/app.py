@@ -93,8 +93,10 @@ body{{font-family:'JetBrains Mono',monospace;background:#0B0C10;min-height:100vh
   </div>
 </div>
 
-<div class="fixed bottom-4 left-1/2 -translate-x-1/2 text-[9px] text-gray-600 tracking-[0.3em]">
-  NEXUS v3.7.1 // SISTEMA BLOQUEADO
+<div class="fixed bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4 sm:gap-6">
+  <a href="https://v-sandbox.vultaethel.com" target="_blank"><img src="https://v-sandbox.vultaethel.com/assets/images/logo/logo-transparent.png" alt="V-SANDBOX" class="h-6 sm:h-7 w-auto opacity-60 hover:opacity-100 transition"/></a>
+  <a href="https://vultaethel.com" target="_blank"><img src="https://v-sandbox.vultaethel.com/assets/images/sponsors/logovultaethelsponsor.png" alt="VULTAETHEL" class="h-5 sm:h-6 w-auto opacity-60 hover:opacity-100 transition"/></a>
+  <span class="text-[9px] text-gray-600 tracking-[0.3em]">NEXUS // FLASH EASY</span>
 </div>
 
 <div class="fixed bottom-16 left-1/2 -translate-x-1/2 w-full max-w-md px-4">
