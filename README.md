@@ -1,119 +1,123 @@
-# NEXUS CTF Challenge 🔐
+# NEXUS
 
-> Multi-stage web challenge: recon, header authentication, token exchange, and flag capture.
-> Ideal para eventos CTF, workshops de ciberseguridad, o práctica personal.
-
-## 📋 Overview
-
-NEXUS simula un sistema con **3 capas de autenticación**. El objetivo es atravesarlas en orden para obtener la flag oculta.
-
-| Atributo | Valor |
-|----------|-------|
-| **Dificultad** | 🟡 Media |
-| **Categoría** | Web — Multi-stage Authentication Bypass |
-| **Formato flag** | `CTF{...}` |
-| **Puerto** | `9090` |
-| **Stack** | Python + Flask + Podman/Docker |
-
-## 🧩 Flujo del reto
+multi-stage web authentication challenge
 
 ```
-Página principal  ──→  /robots.txt  ──→  /init  ──→  /portal  ──→  /flag
+  _   _ _____  _____ _   __  __
+ | \ | | ____|/ ___| | | \ \/ /
+ |  \| |  _| | |   | |_| |\  /
+ | |\  | |___| |___|  _  |/  \
+ |_| \_|_____|\____|_| |_/_/\_\
 ```
 
-| Paso | Endpoint | Método | Qué enviar | Qué recibes |
-|------|----------|--------|------------|-------------|
-| 1 | `/init` | `POST` | Header `X-Bootstrap: enable` | `session_id` |
-| 2 | `/portal` | `POST` | JSON `{"session_id":"..."}` | `auth_token` |
-| 3 | `/flag` | `GET` | Header `Authorization: Bearer <token>` | **🚩 Flag** |
+## description
 
-Las pistas están ocultas en la página principal (base64) y en `/robots.txt`.
+nexus simulates a system with 3 authentication layers. the goal is to traverse
+each layer in order to retrieve a hidden flag.
 
-## 🚀 Despliegue (3 formas)
+attribute       | value
+----------------|-------
+difficulty      | medium
+category        | web -- multi-stage auth bypass
+flag format     | CTF{...}
+port            | 9090
+stack           | python + flask + podman/docker
 
-### Opción 1 — Script automático (recomendado)
+## flow
 
-```bash
-./deploy.sh
+```
+/robots.txt  -->  /init  -->  /portal  -->  /flag
 ```
 
-### Opción 2 — Docker Compose
+step | endpoint | method | input | output
+-----|----------|--------|-------|-------
+1    | /init    | POST   | header `X-Bootstrap: enable` | `session_id`
+2    | /portal  | POST   | json `{"session_id":"..."}`  | `auth_token`
+3    | /flag    | GET    | header `Authorization: Bearer <token>` | flag
 
-```bash
-docker compose up -d
-# o con podman:
-podman-compose up -d
+hints are embedded in the main page (base64) and /robots.txt.
+
+## deploy
+
+### option 1 -- automatic script
+
+```
+$ chmod +x deploy.sh
+$ ./deploy.sh
 ```
 
-### Opción 3 — Manual
+### option 2 -- docker compose
 
-```bash
-# 1. Construir la imagen
-podman build -t ctf-nexus challenge/
-
-# 2. Ejecutar
-podman run -d --name ctf-nexus --network host ctf-nexus
-
-# Alternativa con Docker:
-docker build -t ctf-nexus challenge/
-docker run -d --name ctf-nexus -p 9090:9090 ctf-nexus
+```
+$ docker compose up -d
 ```
 
-### Verificar que funciona
+### option 3 -- manual
 
-```bash
-curl -s -o /dev/null -w "%{http_code}" http://localhost:9090/
-# Debe responder: 200
+```
+$ podman build -t ctf-nexus challenge/
+$ podman run -d --name ctf-nexus --network host ctf-nexus
 ```
 
-## 🌐 Acceso
+with docker:
 
-| Desde | URL |
-|-------|-----|
-| **Misma máquina** | http://localhost:9090/ |
-| **Red local** | http://<IP_DEL_SERVIDOR>:9090/ |
+```
+$ docker build -t ctf-nexus challenge/
+$ docker run -d --name ctf-nexus -p 9090:9090 ctf-nexus
+```
 
-Para obtener la IP del servidor: `ip addr show | grep "inet " | grep -v 127.0.0.1`
+### verify
 
-## 📚 Solución
+```
+$ curl -s -o /dev/null -w "%{http_code}" http://localhost:9090/
+200
+```
 
-Abre `solution/index.html` en cualquier navegador — es una guía interactiva paso a paso con comandos listos para copiar y pegar.
+## access
 
-> ⚠️ **Para organizadores:** Si no quieres que los participantes vean la solución, borra la carpeta `solution/` antes del evento.
+```
+local:   http://localhost:9090/
+network: http://<server-ip>:9090/
+```
 
-## 📁 Estructura del proyecto
+find the server ip:
+
+```
+$ ip addr show | grep "inet " | grep -v 127.0.0.1
+```
+
+## solution
+
+open solution/index.html in a browser for a step-by-step walkthrough.
+
+> for organizers: remove the solution/ directory before the event.
+
+## structure
 
 ```
 ctf-nexus/
-├── challenge/                 # 🎯 El CTF en sí
-│   ├── app.py                 # Servidor Flask (el reto)
-│   ├── Dockerfile             # Imagen Docker/Podman
-│   └── requirements.txt       # Dependencias (solo flask)
-├── solution/                  # 📖 Walkthrough (abrir en navegador)
-│   └── index.html
-├── deploy.sh                  # 🚀 Script de despliegue automático
-├── docker-compose.yml         # 🐳 Orquestación simple
-├── README.md                  # Este archivo
-├── LICENSE                    # MIT
-└── .gitignore
+|-- challenge/
+|   |-- app.py              # flask server
+|   |-- Dockerfile          # container image
+|   +-- requirements.txt    # dependencies (flask)
+|-- solution/
+|   +-- index.html          # walkthrough (standalone)
+|-- deploy.sh               # automatic deploy script
+|-- docker-compose.yml      # container orchestration
+|-- README.md
+|-- LICENSE                 # mit
++-- .gitignore
 ```
 
-## 🛑 Comandos útiles
+## commands
 
-```bash
-# Ver logs del servidor
-podman logs -f ctf-nexus
-
-# Detener
-podman stop ctf-nexus
-
-# Reiniciar
-podman restart ctf-nexus
-
-# Eliminar contenedor
-podman rm -f ctf-nexus
+```
+$ podman logs -f ctf-nexus    # tail logs
+$ podman stop ctf-nexus       # stop
+$ podman restart ctf-nexus    # restart
+$ podman rm -f ctf-nexus      # remove
 ```
 
-## 📄 Licencia
+## license
 
-MIT — haz lo que quieras con esto.
+MIT

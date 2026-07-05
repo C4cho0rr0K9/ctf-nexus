@@ -64,7 +64,7 @@ pre .copy-btn:hover{background:#00FF6622;border-color:#00FF66}
           Usa los que te salgan a ti, no copies los del ejemplo.
         </p>
         <p class="text-xs text-gray-400">
-          <span class="text-lime">&#9654;</span> Si accedes desde otra máquina, reemplaza
+          <span class="text-lime">&gt;&gt;</span> Si accedes desde otra máquina, reemplaza
           <code>localhost</code> por la IP del servidor.
         </p>
       </div>
@@ -127,7 +127,7 @@ Disallow: /flag</pre>
         <p class="text-xs text-gray-300 mb-2">Respuesta exitosa:</p>
         <pre style="border-color:#00FF66">{<span style="color:#00FF66">"status":"SESSION_CREATED"</span>,"session_id":"<span style="color:#FF7700">dbbdddc99d5637e17d365e87ea223459</span>","next":"/portal"}</pre>
         <p class="text-xs text-gray-300">
-          <span class="text-lime">&#10003;</span> Recibes un <code>session_id</code>.
+          <span class="text-lime">[*]</span> Recibes un <code>session_id</code>.
           <span class="text-orange font-bold">Copia ese valor</span> para el siguiente paso.
         </p>
       </div>
@@ -142,7 +142,7 @@ Disallow: /flag</pre>
         <p class="text-xs text-gray-300 mb-2">Respuesta exitosa:</p>
         <pre style="border-color:#00FF66">{<span style="color:#00FF66">"status":"AUTH_GRANTED"</span>,"auth_token":"<span style="color:#FF7700">4ddd3cacd8a21f6999f30ef7c06f25fc2bad4b6553424358535425f35eee5d0a</span>","next":"/flag"}</pre>
         <p class="text-xs text-gray-300">
-          <span class="text-lime">&#10003;</span> Recibes un <code>auth_token</code>.
+          <span class="text-lime">[*]</span> Recibes un <code>auth_token</code>.
           <span class="text-orange font-bold">Copia este valor</span> — es la clave final.
         </p>
       </div>
@@ -156,7 +156,7 @@ Disallow: /flag</pre>
         <p class="text-xs text-gray-300 mb-2">Respuesta exitosa:</p>
         <pre style="border-color:#00FF66">{<span style="color:#00FF66">"status":"ACCESS_GRANTED"</span>,"flag":"<span style="color:#00FF66">CTF{...}</span>"}</pre>
         <p class="text-xs text-gray-300">
-          <span class="text-lime">&#10003;</span> La flag aparece en el campo <code>flag</code>.
+          <span class="text-lime">[*]</span> La flag aparece en el campo <code>flag</code>.
         </p>
       </div>
 
@@ -170,7 +170,7 @@ Disallow: /flag</pre>
         <p class="text-xs text-gray-300 mb-2">Respuesta correcta:</p>
         <pre style="border-color:#00FF66">{<span style="color:#00FF66">"status":"correct"</span>,"message":"ACCESS GRANTED // Flag verificada correctamente. Has completado el reto NEXUS."}</pre>
         <p class="text-xs text-gray-300">
-          <span class="text-lime">&#10003;</span> Reto completado.
+          <span class="text-lime">[*]</span> Reto completado.
         </p>
       </div>
 
@@ -184,7 +184,7 @@ Disallow: /flag</pre>
   </div>
 </div>
 
-<div id="toast" class="copied-toast">✓ COPIADO</div>
+<div id="toast" class="copied-toast">[+] COPIED</div>
 
 <script>
 document.querySelectorAll('pre').forEach(function(pre) {
@@ -195,7 +195,7 @@ document.querySelectorAll('pre').forEach(function(pre) {
     var text = pre.textContent.replace(/^\$\s*/gm, '').trim();
     navigator.clipboard.writeText(text).then(function() {
       var toast = document.getElementById('toast');
-      toast.textContent = '✓ COMANDO COPIADO';
+      toast.textContent = '[+] COMMAND COPIED';
       toast.classList.add('show');
       setTimeout(function() { toast.classList.remove('show'); }, 2000);
     });
