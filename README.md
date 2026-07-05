@@ -3,11 +3,11 @@
 multi-stage web authentication challenge
 
 ```
-  _   _ _____  _____ _   __  __
- | \ | | ____|/ ___| | | \ \/ /
- |  \| |  _| | |   | |_| |\  /
- | |\  | |___| |___|  _  |/  \
- |_| \_|_____|\____|_| |_/_/\_\
+  _   _  _____  _   _ _   _ _____
+ | \ | || ____|| \ | | \ | |_   _|
+ |  \| ||  _|  |  \| |  \| | | |
+ | |\  || |___ | |\  | |\  | | |
+ |_| \_||_____||_| \_|_| \_| |_|
 ```
 
 ## description
@@ -23,6 +23,7 @@ flag format     | CTF{...}
 port            | 9090
 stack           | python + flask + podman/docker
 event           | V-SANDBOX by VULTAETHEL
+date            | 2026-07-18 — 13:00-18:00 (sabado)
 
 ## flow
 
