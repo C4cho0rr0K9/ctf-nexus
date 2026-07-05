@@ -1,3 +1,5 @@
+<img width="929" height="794" alt="image" src="https://github.com/user-attachments/assets/ea0be101-1724-4811-8acc-3e546493d91a" />
+
 # NEXUS
 
 multi-stage web authentication challenge
