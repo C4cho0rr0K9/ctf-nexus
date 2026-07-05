@@ -1,0 +1,11 @@
+services:
+  ctf-nexus:
+    build:
+      context: ./challenge
+      docker_opts:
+        - "--dns=8.8.8.8"
+    image: ctf-nexus:latest
+    container_name: ctf-nexus
+    ports:
+      - "9090:9090"
+    restart: unless-stopped

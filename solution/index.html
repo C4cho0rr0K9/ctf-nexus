@@ -30,10 +30,12 @@ body{font-family:'JetBrains Mono',monospace;background:#0B0C10}
 .step-box{border-left:2px solid #00FF66;transition:all .3s ease}
 .step-box:hover{border-left-color:#FF7700;background:rgba(0,255,102,0.03)}
 code{background:#1F2833;padding:1px 6px;border-radius:2px;font-size:inherit}
-pre{background:#0B0C10;border:1px solid #1F2833;border-radius:4px;padding:12px;overflow-x:auto;font-size:11px;line-height:1.6;margin:8px 0;white-space:pre-wrap;word-break:break-all}
-.copy-btn{position:absolute;top:8px;right:8px;font-size:9px;padding:3px 8px;background:#1F2833;border:1px solid #00FF6644;border-radius:3px;color:#00FF66;cursor:pointer}
-.copy-btn:hover{background:#00FF6622}
-pre:has(+.copy-btn){position:relative}
+pre{background:#0B0C10;border:1px solid #1F2833;border-radius:4px;padding:12px 12px 12px 12px;overflow-x:auto;font-size:11px;line-height:1.6;margin:8px 0;white-space:pre-wrap;word-break:break-all;position:relative}
+pre .copy-btn{display:none;position:absolute;top:6px;right:6px;font-size:9px;padding:3px 8px;background:#1F2833;border:1px solid #00FF6644;border-radius:3px;color:#00FF66;cursor:pointer;font-family:inherit;transition:all .2s}
+pre:hover .copy-btn{display:block}
+pre .copy-btn:hover{background:#00FF6622;border-color:#00FF66}
+.copied-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#00FF66;color:#0B0C10;font-size:11px;padding:8px 16px;border-radius:4px;font-weight:700;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none}
+.copied-toast.show{opacity:1}
 </style>
 </head>
 <body class="grid-bg scanlines text-white">
@@ -181,5 +183,26 @@ Disallow: /flag</pre>
     </div>
   </div>
 </div>
+
+<div id="toast" class="copied-toast">✓ COPIADO</div>
+
+<script>
+document.querySelectorAll('pre').forEach(function(pre) {
+  var btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.textContent = '[ COPIAR ]';
+  btn.onclick = function() {
+    var text = pre.textContent.replace(/^\$\s*/gm, '').trim();
+    navigator.clipboard.writeText(text).then(function() {
+      var toast = document.getElementById('toast');
+      toast.textContent = '✓ COMANDO COPIADO';
+      toast.classList.add('show');
+      setTimeout(function() { toast.classList.remove('show'); }, 2000);
+    });
+  };
+  pre.appendChild(btn);
+});
+</script>
+
 </body>
 </html>
