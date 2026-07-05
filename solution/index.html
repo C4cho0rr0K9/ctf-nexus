@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NEXUS CTF // Walkthrough</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config={theme:{extend:{colors:{terminal:'#0B0C10',terminal2:'#121212',matrix:'#1F2833',lime:'#00FF66',orange:'#FF7700',warnred:'#ff3b3b'},fontFamily:{mono:['"JetBrains Mono"','monospace']}}}}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{color-scheme:dark}
+body{font-family:'JetBrains Mono',monospace;background:#0B0C10}
+.grid-bg{background-image:linear-gradient(rgba(0,255,102,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,102,0.04) 1px,transparent 1px);background-size:42px 42px}
+.scanlines::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0) 4px)}
+.glow-lime{box-shadow:0 0 12px rgba(0,255,102,0.35),inset 0 0 6px rgba(0,255,102,0.08)}
+.glow-orange{box-shadow:0 0 12px rgba(255,119,0,0.35),inset 0 0 6px rgba(255,119,0,0.08)}
+.glow-text{text-shadow:0 0 8px rgba(0,255,102,0.55),0 0 22px rgba(0,255,102,0.25)}
+.glow-hover{transition:box-shadow .2s ease,border-color .2s ease}
+.glow-hover:hover{box-shadow:0 0 18px rgba(0,255,102,0.45)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#0B0C10}
+::-webkit-scrollbar-thumb{background:#1F2833;border:1px solid #00FF6633}
+::-webkit-scrollbar-thumb:hover{background:#00FF66}
+.terminal-box{background:linear-gradient(135deg,#0B0C10 0%,#111 100%)}
+.step-box{border-left:2px solid #00FF66;transition:all .3s ease}
+.step-box:hover{border-left-color:#FF7700;background:rgba(0,255,102,0.03)}
+code{background:#1F2833;padding:1px 6px;border-radius:2px;font-size:inherit}
+pre{background:#0B0C10;border:1px solid #1F2833;border-radius:4px;padding:12px;overflow-x:auto;font-size:11px;line-height:1.6;margin:8px 0;white-space:pre-wrap;word-break:break-all}
+.copy-btn{position:absolute;top:8px;right:8px;font-size:9px;padding:3px 8px;background:#1F2833;border:1px solid #00FF6644;border-radius:3px;color:#00FF66;cursor:pointer}
+.copy-btn:hover{background:#00FF6622}
+pre:has(+.copy-btn){position:relative}
+</style>
+</head>
+<body class="grid-bg scanlines text-white">
+<div class="max-w-4xl mx-auto px-4 py-8">
+  <div class="terminal-box border border-matrix rounded-lg overflow-hidden glow-lime mb-6">
+    <div class="flex items-center gap-2 px-4 py-3 border-b border-matrix bg-matrix/40">
+      <span class="w-3 h-3 rounded-full bg-warnred/80"></span>
+      <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+      <span class="w-3 h-3 rounded-full bg-lime/80"></span>
+      <span class="ml-3 text-xs text-gray-400">agent@nexus: ~/walkthrough</span>
+    </div>
+    <div class="p-6 sm:p-8">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="text-lime text-sm font-bold">$</span>
+        <span class="text-white text-sm font-bold">cat ./SOLUCION.md</span>
+      </div>
+      <div class="text-[10px] uppercase tracking-[0.3em] text-orange mb-3">// CTF NEXUS — GUIA DE RESOLUCIÓN</div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold mb-4">Walkthrough: <span class="text-lime">NEXUS v3.7.1</span></h1>
+      <p class="text-xs text-gray-400 mb-2">URL del reto: <span class="text-lime" id="urlDisplay">http://localhost:9090/</span></p>
+      <p class="text-xs text-gray-400 mb-4">Dificultad: <span class="text-orange font-bold">MEDIA</span></p>
+
+      <div class="border border-orange/30 bg-orange/5 rounded-sm p-4 mb-6">
+        <p class="text-xs text-gray-300 mb-2">
+          <span class="text-orange font-bold">IMPORTANTE:</span> Los valores de
+          <code>session_id</code> y <code>auth_token</code> cambian cada vez.
+          Usa los que te salgan a ti, no copies los del ejemplo.
+        </p>
+        <p class="text-xs text-gray-400">
+          <span class="text-lime">&#9654;</span> Si accedes desde otra máquina, reemplaza
+          <code>localhost</code> por la IP del servidor.
+        </p>
+      </div>
+
+      <div class="border border-lime/30 bg-lime/5 rounded-sm p-4 mb-6">
+        <p class="text-xs text-gray-300">
+          <span class="text-lime font-bold">COMANDO ÚNICO</span> — Resuelve todo automaticamente:
+        </p>
+        <pre style="border-color:#00FF66"><span style="color:#00FF66">$</span> SID=$(curl -s -X POST -H "X-Bootstrap: enable" http://localhost:9090/init | python3 -c "import sys,json;print(json.load(sys.stdin)['session_id'])") && TOK=$(curl -s -X POST -H "Content-Type: application/json" -d "{\"session_id\":\"$SID\"}" http://localhost:9090/portal | python3 -c "import sys,json;print(json.load(sys.stdin)['auth_token'])") && curl -s -H "Authorization: Bearer $TOK" http://localhost:9090/flag</pre>
+      </div>
+
+      <!-- STEP 1 -->
+      <div class="step-box pl-4 py-4 mb-6">
+        <div class="text-[10px] uppercase tracking-[0.2em] text-lime mb-2">PASO 1 // RECONOCIMIENTO INICIAL</div>
+        <p class="text-xs text-gray-300 mb-2">Accede a la página principal:</p>
+        <pre><span style="color:#00FF66">$</span> curl -s http://localhost:9090/</pre>
+        <p class="text-xs text-gray-400 mb-2">Busca en la salida estas líneas clave:</p>
+        <pre><span style="color:#FF7700">[2026-07-04 14:00:05]</span> NEXUS::warning Endpoints sensibles detectados: /init, /portal, /flag
+<span style="color:#FF7700">[2026-07-04 14:00:06]</span> NEXUS::hint Revisa el mapa del sitio antes de continuar
+<span style="color:#FF7700">[2026-07-04 14:00:08]</span> NEXUS::debug WC1Cb290c3RyYXA6IGVuYWJsZQ==</pre>
+        <p class="text-xs text-gray-300">
+          El string <code>WC1Cb290c3RyYXA6IGVuYWJsZQ==</code> es base64.
+          También se mencionan 3 endpoints: <code>/init</code>, <code>/portal</code> y <code>/flag</code>.
+        </p>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="step-box pl-4 py-4 mb-6">
+        <div class="text-[10px] uppercase tracking-[0.2em] text-lime mb-2">PASO 2 // DECODIFICAR BASE64</div>
+        <p class="text-xs text-gray-300 mb-2">Decodifica el mensaje oculto:</p>
+        <pre><span style="color:#00FF66">$</span> echo "WC1Cb290c3RyYXA6IGVuYWJsZQ==" | base64 -d</pre>
+        <p class="text-xs text-gray-300 mb-2">Resultado:</p>
+        <pre style="border-color:#00FF66"><span style="color:#00FF66">X-Bootstrap: enable</span></pre>
+        <p class="text-xs text-gray-300">
+          Es un header HTTP. El nombre del header es <code>X-Bootstrap</code>
+          y el valor es <code>enable</code>. Se usa en <code>/init</code>.
+        </p>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="step-box pl-4 py-4 mb-6">
+        <div class="text-[10px] uppercase tracking-[0.2em] text-lime mb-2">PASO 3 // ROBOTS.TXT</div>
+        <p class="text-xs text-gray-300 mb-2">Consulta el mapa del sitio:</p>
+        <pre><span style="color:#00FF66">$</span> curl -s http://localhost:9090/robots.txt</pre>
+        <p class="text-xs text-gray-300 mb-2">Resultado:</p>
+        <pre style="border-color:#FF7700">User-agent: *
+Disallow: /init
+Disallow: /portal
+Disallow: /flag</pre>
+        <p class="text-xs text-gray-300">
+          Confirma los 3 endpoints. Orden: <span class="text-orange">/init &rarr; /portal &rarr; /flag</span>.
+        </p>
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="step-box pl-4 py-4 mb-6">
+        <div class="text-[10px] uppercase tracking-[0.2em] text-lime mb-2">PASO 4 // AUTENTICACIÓN EN /init</div>
+        <p class="text-xs text-gray-300 mb-2">GET da error — requiere POST con header:</p>
+        <pre><span style="color:#00FF66">$</span> curl -s -X POST -H "X-Bootstrap: enable" http://localhost:9090/init</pre>
+        <p class="text-xs text-gray-300 mb-2">Respuesta exitosa:</p>
+        <pre style="border-color:#00FF66">{<span style="color:#00FF66">"status":"SESSION_CREATED"</span>,"session_id":"<span style="color:#FF7700">dbbdddc99d5637e17d365e87ea223459</span>","next":"/portal"}</pre>
+        <p class="text-xs text-gray-300">
+          <span class="text-lime">&#10003;</span> Recibes un <code>session_id</code>.
+          <span class="text-orange font-bold">Copia ese valor</span> para el siguiente paso.
+        </p>
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="step-box pl-4 py-4 mb-6">
+        <div class="text-[10px] uppercase tracking-[0.2em] text-lime mb-2">PASO 5 // INTERCAMBIAR SESSION POR TOKEN</div>
+        <p class="text-xs text-gray-300 mb-2">Usa el <code>session_id</code> en <code>/portal</code>:</p>
+        <pre><span style="color:#00FF66">$</span> curl -s -X POST -H "Content-Type: application/json" \
+  -d '{"session_id":"<span style="color:#FF7700">dbbdddc99d5637e17d365e87ea223459</span>"}' \
+  http://localhost:9090/portal</pre>
+        <p class="text-xs text-gray-300 mb-2">Respuesta exitosa:</p>
+        <pre style="border-color:#00FF66">{<span style="color:#00FF66">"status":"AUTH_GRANTED"</span>,"auth_token":"<span style="color:#FF7700">4ddd3cacd8a21f6999f30ef7c06f25fc2bad4b6553424358535425f35eee5d0a</span>","next":"/flag"}</pre>
+        <p class="text-xs text-gray-300">
+          <span class="text-lime">&#10003;</span> Recibes un <code>auth_token</code>.
+          <span class="text-orange font-bold">Copia este valor</span> — es la clave final.
+        </p>
+      </div>
+
+      <!-- STEP 6 -->
+      <div class="step-box pl-4 py-4 mb-6">
+        <div class="text-[10px] uppercase tracking-[0.2em] text-lime mb-2">PASO 6 // OBTENER LA FLAG</div>
+        <p class="text-xs text-gray-300 mb-2">Usa el token como Bearer en <code>/flag</code>:</p>
+        <pre><span style="color:#00FF66">$</span> curl -s -H "Authorization: Bearer <span style="color:#FF7700">4ddd3cacd8a21f6999f30ef7c06f25fc2bad4b6553424358535425f35eee5d0a</span>" \
+  http://localhost:9090/flag</pre>
+        <p class="text-xs text-gray-300 mb-2">Respuesta exitosa:</p>
+        <pre style="border-color:#00FF66">{<span style="color:#00FF66">"status":"ACCESS_GRANTED"</span>,"flag":"<span style="color:#00FF66">CTF{...}</span>"}</pre>
+        <p class="text-xs text-gray-300">
+          <span class="text-lime">&#10003;</span> La flag aparece en el campo <code>flag</code>.
+        </p>
+      </div>
+
+      <!-- STEP 7 -->
+      <div class="step-box pl-4 py-4 mb-6">
+        <div class="text-[10px] uppercase tracking-[0.2em] text-lime mb-2">PASO 7 // VERIFICAR LA FLAG</div>
+        <p class="text-xs text-gray-300 mb-2">Verifica via endpoint <code>/submit</code>:</p>
+        <pre><span style="color:#00FF66">$</span> curl -s -X POST -H "Content-Type: application/json" \
+  -d '{"flag":"<span style="color:#FF7700">CTF{...}</span>"}' \
+  http://localhost:9090/submit</pre>
+        <p class="text-xs text-gray-300 mb-2">Respuesta correcta:</p>
+        <pre style="border-color:#00FF66">{<span style="color:#00FF66">"status":"correct"</span>,"message":"ACCESS GRANTED // Flag verificada correctamente. Has completado el reto NEXUS."}</pre>
+        <p class="text-xs text-gray-300">
+          <span class="text-lime">&#10003;</span> Reto completado.
+        </p>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="text-center mt-6 pt-4 border-t border-matrix">
+        <p class="text-[10px] text-gray-500 tracking-[0.2em]">
+          &gt;&gt; NEXUS CTF v3.7.1 — WALKTHROUGH &lt;&lt;
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
